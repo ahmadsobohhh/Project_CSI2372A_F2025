@@ -1,0 +1,3 @@
+C:/Users/Ahmad Soboh/Desktop/Projects/Project_CSI2372A_F2025/build/CMakeFiles/memoarrr.dir
+C:/Users/Ahmad Soboh/Desktop/Projects/Project_CSI2372A_F2025/build/CMakeFiles/ALL_BUILD.dir
+C:/Users/Ahmad Soboh/Desktop/Projects/Project_CSI2372A_F2025/build/CMakeFiles/ZERO_CHECK.dir
