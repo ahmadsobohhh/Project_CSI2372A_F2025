@@ -1,6 +1,18 @@
-# Project_CSI2372A_F2025
+Project Group Information
+=========================
 
-Memoarrr! console implementation for CSI2372A Fall 2025. The program supports the full base game plus both expert variants (expert display and expert rules) exactly as described in the assignment brief.
+Student Name: Ahmad Soboh
+Student Number: 300294253
+
+Student Name: Pamir Habib 
+Student Number: 300284009
+
+Course Code: CSI2372A
+
+Project Description
+-------------------
+Memoarrr! console implementation featuring base rules, expert display, and expert-rule variants as described in the assignment specification.
+# Project_CSI2372A_F2025
 
 ## Requirements
 
@@ -9,8 +21,8 @@ Memoarrr! console implementation for CSI2372A Fall 2025. The program supports th
 
 ## Configure & Build
 
+Ensure you are in project root folder
 ```cmd
-cd "C:\Users\Ahmad Soboh\Desktop\Projects\Project_CSI2372A_F2025"
 cmake -S . -B build
 cmake --build build
 ```
@@ -18,7 +30,6 @@ cmake --build build
 ## Run
 
 ```cmd
-cd "C:\Users\Ahmad Soboh\Desktop\Projects\Project_CSI2372A_F2025"
 build\Debug\memoarrr.exe
 ```
 
@@ -29,8 +40,3 @@ During startup the executable prompts for:
 3. Number of players (2–4), player names, and seat selection (top/right/bottom/left)
 
 Each round automatically resets the board, lets every player secretly peek at the three cards in front of their seat, then runs the full Memoarrr! turn sequence including ruby awards. Expert-mode abilities (octopus swap, penguin flip-down, walrus block, crab extra flip, turtle skip) can be combined with either display option.
-
-## Submission Notes
-
-- Fill in `README.txt` with your group information before creating the submission ZIP, as required by the assignment instructions.
-- Source files are organized under `include/` and `src/`; `CMakeLists.txt` builds the `memoarrr` console executable.
