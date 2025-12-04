@@ -1,3 +1,4 @@
+// RubisDeck implementation: builds/reset the deck with assignment ruby counts.
 #include "RubisDeck.h"
 
 #include <memory>

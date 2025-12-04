@@ -1,3 +1,4 @@
+// Rubis implementation: lightweight wrapper around integer reward values.
 #include "Rubis.h"
 
 #include <ostream>

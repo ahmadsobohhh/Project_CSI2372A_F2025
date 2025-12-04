@@ -4,6 +4,7 @@
 
 class RubisDeck;
 
+// Represents a reward card worth 1-4 rubies that can be printed or summed.
 class Rubis {
 public:
     Rubis(const Rubis&) = delete;
@@ -11,6 +12,7 @@ public:
     Rubis(Rubis&&) noexcept = default;
     Rubis& operator=(Rubis&&) noexcept = default;
 
+    // No parameters. Returns the stored ruby count as an int via implicit conversion.
     operator int() const;
 
 private:

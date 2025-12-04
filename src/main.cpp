@@ -1,3 +1,4 @@
+// Entry point and orchestration logic for the Memoarrr! console implementation.
 #include "CardDeck.h"
 #include "Game.h"
 #include "RubisDeck.h"
@@ -14,6 +15,9 @@
 
 namespace {
 
+// Description: Strips ASCII whitespace from both ends of the supplied string.
+// Parameters: input (const std::string&) user-provided line.
+// Returns: std::string containing the trimmed view.
 std::string trim(const std::string& input) {
     const auto first = input.find_first_not_of(" \t\r\n");
     if (first == std::string::npos) {
@@ -23,6 +27,9 @@ std::string trim(const std::string& input) {
     return input.substr(first, last - first + 1);
 }
 
+// Description: Displays a prompt and reads a full line from std::cin.
+// Parameters: prompt (const std::string&), allowEmpty (bool) to accept blank input.
+// Returns: std::string containing the trimmed response.
 std::string promptLine(const std::string& prompt, bool allowEmpty = false) {
     while (true) {
         std::cout << prompt;
@@ -38,6 +45,9 @@ std::string promptLine(const std::string& prompt, bool allowEmpty = false) {
     }
 }
 
+// Description: Requests an integer within [min,max] inclusive, re-prompting on error.
+// Parameters: prompt (const std::string&), min/max (int) bounds.
+// Returns: int value typed by the user that lies within bounds.
 int promptInt(const std::string& prompt, int min, int max) {
     while (true) {
         std::string line = promptLine(prompt);
@@ -54,6 +64,8 @@ int promptInt(const std::string& prompt, int min, int max) {
     }
 }
 
+// Description: Asks the user to choose between base vs. expert display layout.
+// Returns: DisplayMode enumerator matching the choice.
 DisplayMode chooseDisplayMode() {
     std::cout << "Display Modes:" << std::endl;
     std::cout << "  1) Base board (5x5 grid)" << std::endl;
@@ -62,6 +74,8 @@ DisplayMode chooseDisplayMode() {
     return choice == 1 ? DisplayMode::Base : DisplayMode::Expert;
 }
 
+// Description: Asks the user to choose between base vs. expert ruleset.
+// Returns: RulesMode enumerator matching the choice.
 RulesMode chooseRulesMode() {
     std::cout << "Rules Modes:" << std::endl;
     std::cout << "  1) Base rules" << std::endl;
@@ -70,10 +84,15 @@ RulesMode chooseRulesMode() {
     return choice == 1 ? RulesMode::Base : RulesMode::Expert;
 }
 
+// Description: Prompts for the number of players taking part.
+// Returns: int count between 2 and 4 inclusive.
 int choosePlayerCount() {
     return promptInt("Enter number of players (2-4): ", 2, 4);
 }
 
+// Description: Converts a letter label (A-E) into the Letter enum.
+// Parameters: c (char) raw input, letter (Letter&) output parameter.
+// Returns: true when conversion succeeds.
 bool charToLetter(char c, Letter& letter) {
     switch (std::toupper(static_cast<unsigned char>(c))) {
     case 'A': letter = Letter::A; return true;
@@ -85,6 +104,9 @@ bool charToLetter(char c, Letter& letter) {
     }
 }
 
+// Description: Converts a digit (1-5) into the Number enum.
+// Parameters: c (char), number (Number&) output parameter.
+// Returns: true when conversion succeeds.
 bool charToNumber(char c, Number& number) {
     switch (c) {
     case '1': number = Number::One; return true;
@@ -96,6 +118,9 @@ bool charToNumber(char c, Number& number) {
     }
 }
 
+// Description: Parses a coordinate string (e.g., B3) into a Position struct.
+// Parameters: token (const std::string&), position (Position&) output.
+// Returns: true if both components were valid.
 bool parsePosition(const std::string& token, Position& position) {
     if (token.size() < 2) {
         return false;
@@ -112,6 +137,9 @@ bool parsePosition(const std::string& token, Position& position) {
     return true;
 }
 
+// Description: Serializes a Position into its letter-number representation.
+// Parameters: pos (const Position&).
+// Returns: std::string such as "A1".
 std::string formatPosition(const Position& pos) {
     std::string result;
     result += letter_symbol(pos.letter);
@@ -119,6 +147,9 @@ std::string formatPosition(const Position& pos) {
     return result;
 }
 
+// Description: Lets a player pick an available Side from the list.
+// Parameters: available (std::vector<Side>&) mutable pool of seat choices.
+// Returns: Side selected by the user (removed from availability).
 Side chooseSide(std::vector<Side>& available) {
     while (true) {
         std::cout << "Available sides:" << std::endl;
@@ -133,6 +164,9 @@ Side chooseSide(std::vector<Side>& available) {
     }
 }
 
+// Description: Computes the three positions that sit in front of a given side.
+// Parameters: side (Side) seat orientation.
+// Returns: vector<Position> describing peek locations.
 std::vector<Position> frontCardsForSide(Side side) {
     switch (side) {
     case Side::Top:
@@ -147,6 +181,9 @@ std::vector<Position> frontCardsForSide(Side side) {
     return {};
 }
 
+// Description: Prompts the current player for a face-down position, respecting blocks.
+// Parameters: board (const Board&), player (const Player&), blockActive (bool) whether walrus applies.
+// Returns: Position chosen that is valid to flip.
 Position promptPosition(const Board& board, const Player& player, bool blockActive) {
     while (true) {
         std::string input = promptLine(player.getName() + ", choose a card (e.g., B3): ");
@@ -171,6 +208,9 @@ Position promptPosition(const Board& board, const Player& player, bool blockActi
     }
 }
 
+// Description: Temporarily flips the three cards in front of a player's side for peeking.
+// Parameters: player (Player&), board (Board&), positions (const std::vector<Position>&).
+// Returns: void.
 void revealFrontCards(Player& player, Board& board, const std::vector<Position>& positions) {
     std::cout << "\n" << player.getName() << ", peek at the three cards in front of you." << std::endl;
     for (const auto& pos : positions) {
@@ -191,6 +231,9 @@ void revealFrontCards(Player& player, Board& board, const std::vector<Position>&
     std::cout << std::string(40, '-') << std::endl;
 }
 
+// Description: Computes the next index in circular order through the players vector.
+// Parameters: players (const std::vector<Player>&), current (std::size_t).
+// Returns: std::size_t index that follows current.
 std::size_t nextIndex(const std::vector<Player>& players, std::size_t current) {
     if (players.empty()) {
         return 0;
@@ -198,6 +241,7 @@ std::size_t nextIndex(const std::vector<Player>& players, std::size_t current) {
     return (current + 1) % players.size();
 }
 
+// Bundles the result of processing expert-rule effects for a reveal.
 struct ExpertResult {
     bool extraFlip{false};
     bool skipNext{false};
@@ -205,6 +249,9 @@ struct ExpertResult {
     Position currentPosition;
 };
 
+// Description: Allows the current player to turn a different face-up card face-down.
+// Parameters: board (Board&), currentPosition (const Position&).
+// Returns: true if a card was flipped down, false if skipped.
 bool performPenguin(Board& board, const Position& currentPosition) {
     auto faceUp = board.faceUpCards();
     std::vector<Position> choices;
@@ -255,6 +302,9 @@ bool performPenguin(Board& board, const Position& currentPosition) {
     }
 }
 
+// Description: Lets the player block a face-down card for the next player.
+// Parameters: board (Board&).
+// Returns: true if a card was blocked, false if skipped.
 bool performWalrus(Board& board) {
     std::cout << "Walrus ability: block a face-down card for the next player." << std::endl;
     while (true) {
@@ -283,6 +333,9 @@ bool performWalrus(Board& board) {
     }
 }
 
+// Description: Swaps the revealed octopus card with an orthogonal neighbour.
+// Parameters: board (Board&), origin (const Position&).
+// Returns: Position where the octopus card now resides post-swap.
 Position performOctopus(Board& board, const Position& origin) {
     auto neighbours = orthogonal_neighbours(origin);
     std::vector<Position> valid;
@@ -330,6 +383,9 @@ Position performOctopus(Board& board, const Position& origin) {
     }
 }
 
+// Description: Applies expert animal abilities to the revealed card.
+// Parameters: card (const Card*), position (const Position&), board (Board&), game (const Game&).
+// Returns: ExpertResult outlining follow-up actions (extra flips, skips, blocks).
 ExpertResult applyExpertRules(const Card* card, const Position& position, Board& board, const Game& game) {
     ExpertResult result;
     result.currentPosition = position;
@@ -363,6 +419,9 @@ ExpertResult applyExpertRules(const Card* card, const Position& position, Board&
     return result;
 }
 
+// Description: Prints players sorted by ruby count from least to most.
+// Parameters: players (const std::vector<Player>&).
+// Returns: void.
 void printScores(const std::vector<Player>& players) {
     std::vector<const Player*> ordered;
     for (const auto& player : players) {
@@ -381,6 +440,9 @@ void printScores(const std::vector<Player>& players) {
     }
 }
 
+// Description: Draws the next Rubis token and awards it to the winner.
+// Parameters: winner (Player&), deck (RubisDeck&).
+// Returns: void.
 void awardRubies(Player& winner, RubisDeck& deck) {
     if (deck.isEmpty()) {
         deck.reset();
@@ -395,6 +457,9 @@ void awardRubies(Player& winner, RubisDeck& deck) {
     std::cout << winner.getName() << " receives " << *prize << "!" << std::endl;
 }
 
+// Description: Lets each player peek at their three front cards before a round.
+// Parameters: game (Game&).
+// Returns: void.
 void revealInitialCards(Game& game) {
     for (auto& player : game.players()) {
         auto positions = frontCardsForSide(player.getSide());
@@ -402,6 +467,9 @@ void revealInitialCards(Game& game) {
     }
 }
 
+// Description: Retrieves the sole remaining active player in the round, if any.
+// Parameters: game (Game&).
+// Returns: Player* winner pointer or nullptr when none remain.
 Player* findRoundWinner(Game& game) {
     Player* candidate = nullptr;
     for (auto& player : game.players()) {
@@ -413,6 +481,9 @@ Player* findRoundWinner(Game& game) {
     return candidate;
 }
 
+// Description: Prints the final winner(s) based on the highest ruby totals.
+// Parameters: players (const std::vector<Player>&).
+// Returns: void.
 void announceFinalWinners(const std::vector<Player>& players) {
     int best = 0;
     for (const auto& player : players) {
@@ -441,6 +512,9 @@ void announceFinalWinners(const std::vector<Player>& players) {
     }
 }
 
+// Description: Runs the full seven-round Memoarrr! match loop.
+// Parameters: game (Game&), rules (Rules&), rubisDeck (RubisDeck&).
+// Returns: void.
 void playGame(Game& game, Rules& rules, RubisDeck& rubisDeck) {
     Board& board = game.board();
     std::vector<Player>& players = game.players();
@@ -560,6 +634,8 @@ void playGame(Game& game, Rules& rules, RubisDeck& rubisDeck) {
 
 } // namespace
 
+// Description: Program entry point that configures decks, rules, players, and starts play.
+// Returns: int exit code (0 for success, 1 on fatal error).
 int main() {
     try {
         CardDeck& cardDeck = CardDeck::make_CardDeck();

@@ -1,3 +1,4 @@
+// Board implementation: manages grid state, card storage, and rendering.
 #include "Board.h"
 
 #include <ostream>
@@ -5,10 +6,14 @@
 #include <utility>
 
 namespace {
+// Description: Represents a generic face-down cell with 'z' markers.
+// Returns: std::string "zzz" used when printing hidden cards.
 std::string face_down_row() {
     return std::string("zzz");
 }
 
+// Description: Produces a blank 3-character cell for empty slots (e.g., volcano).
+// Returns: std::string containing three spaces.
 std::string empty_row() {
     return std::string("   ");
 }
@@ -153,6 +158,9 @@ const Board::Cell& Board::at(const Letter& letter, const Number& number) const {
     return m_grid[row][col];
 }
 
+// Description: Streams either the full base board grid or blank placeholders per cell.
+// Parameters: os (std::ostream&), board (const Board&).
+// Returns: std::ostream& allowing chained output.
 std::ostream& operator<<(std::ostream& os, const Board& board) {
     for (std::size_t row = 0; row < 5; ++row) {
         Letter letter = static_cast<Letter>(row);

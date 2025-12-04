@@ -1,3 +1,4 @@
+// Player implementation: stores name/seat/ruby totals and formatted output.
 #include "Player.h"
 
 #include <ostream>

@@ -1,3 +1,4 @@
+// Card implementation: renders 3x3 ASCII tiles and exposes conversion helpers.
 #include "Card.h"
 
 #include <ostream>

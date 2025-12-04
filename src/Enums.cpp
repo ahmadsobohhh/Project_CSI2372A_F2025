@@ -1,9 +1,11 @@
+// Utility helpers that convert between enums, symbols, and board coordinates.
 #include "Enums.h"
 
 #include <array>
 #include <stdexcept>
 
 namespace {
+// Lookup tables for mapping enum values to human-readable strings and symbols.
 constexpr std::array<const char*, 5> kAnimalNames{"Crab", "Penguin", "Octopus", "Turtle", "Walrus"};
 constexpr std::array<const char*, 5> kBackgroundNames{"Red", "Green", "Purple", "Blue", "Yellow"};
 constexpr std::array<const char*, 4> kSideNames{"top", "bottom", "left", "right"};

@@ -1,3 +1,4 @@
+// Game implementation: manages board state, players, and printing helpers.
 #include "Game.h"
 
 #include <algorithm>
@@ -90,6 +91,9 @@ void Game::resetTurnPointers() {
     m_currentPlayer = 0;
 }
 
+// Description: Streams the board view (base or expert) followed by player info.
+// Parameters: os (std::ostream&), game (const Game&).
+// Returns: std::ostream& for chaining.
 std::ostream& operator<<(std::ostream& os, const Game& game) {
     if (game.m_options.displayMode == DisplayMode::Base) {
         os << game.m_board;

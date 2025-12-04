@@ -1,3 +1,4 @@
+// CardDeck implementation: creates and resets the singleton deck of 25 cards.
 #include "CardDeck.h"
 
 #include <memory>

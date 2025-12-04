@@ -1,3 +1,4 @@
+// Rules implementation: validates matches and detects round/game termination.
 #include "Rules.h"
 
 #include <algorithm>
