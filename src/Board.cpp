@@ -178,6 +178,16 @@ std::ostream& operator<<(std::ostream& os, const Board& board) {
             }
             os << '\n';
         }
+        if (row + 1 < 5) {
+            os << "  ";
+            for (std::size_t col = 0; col < 5; ++col) {
+                if (col > 0) {
+                    os << ' ';
+                }
+                os << empty_row();
+            }
+            os << '\n';
+        }
     }
 
     os << "  ";
